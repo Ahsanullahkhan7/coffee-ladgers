@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coffee Shop Ledger</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f7f5f2;
+      margin: 0;
+      padding: 15px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4b2e05;
+      margin-bottom: 10px;
+    }
+
+    .ledger {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      max-width: 420px;
+      margin: auto;
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+
+    .item, .sale {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    input, button, select {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #4b2e05;
+      color: white;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #6b3b06;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .title {
+      font-weight: bold;
+      color: #6b3b06;
+      margin-top: 10px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>☕ Coffee Shop Ledger</h1>
+
+  <div class="ledger">
+    <div class="section">
+      <div class="title">Menu & Prices</div>
+      <div id="itemList"></div>
+      <div class="total">Total Menu Value: Rs <span id="menuTotal">0</span></div>
+
+      <h3>Add / Update Item</h3>
+      <input type="text" id="itemName" placeholder="Item name" />
+      <input type="number" id="itemPrice" placeholder="Price" />
+      <button onclick="addOrUpdateItem()">Save Item</button>
+      <button onclick="clearLedger()" style="background-color: #c0392b; margin-top:10px;">Clear Menu</button>
+    </div>
+
+    <div class="section">
+      <div class="title">Daily Sales Tracker</div>
+      <select id="saleItem"></select>
+      <input type="number" id="saleQty" placeholder="Quantity sold" />
+      <button onclick="addSale()">Add Sale</button>
+
+      <div id="salesList"></div>
+      <div class="total">Today’s Total: Rs <span id="salesTotal">0</span></div>
+      <button onclick="clearSales()" style="background-color: #c0392b; margin-top:10px;">Clear Sales</button>
+    </div>
+  </div>
+
+  <script>
+    let items = JSON.parse(localStorage.getItem("ledgerItems")) || {
+      "Coffee": 150,
+      "Milk tea": 90,
+      "Black tea": 50,
+      "Green tea": 50,
+      "Parata": 50,
+      "Alu parata": 90,
+      "Biryani single": 150,
+      "Biryani double": 250,
+      "Chicken roll": 150
+    };
+
+    let sales = JSON.parse(localStorage.getItem("ledgerSales")) || [];
+
+    function displayItems() {
+      const list = document.getElementById("itemList");
+      const dropdown = document.getElementById("saleItem");
+      list.innerHTML = "";
+      dropdown.innerHTML = "";
+      let total = 0;
+
+      for (const [name, price] of Object.entries(items)) {
+        total += price;
+        list.innerHTML += `<div class="item"><span>${name}</span><span>Rs ${price}</span></div>`;
+        dropdown.innerHTML += `<option value="${name}">${name} - Rs ${price}</option>`;
+      }
+
+      document.getElementById("menuTotal").textContent = total;
+      localStorage.setItem("ledgerItems", JSON.stringify(items));
+    }
+
+    function addOrUpdateItem() {
+      const name = document.getElementById("itemName").value.trim();
+      const price = parseFloat(document.getElementById("itemPrice").value);
+
+      if (name && !isNaN(price)) {
+        items[name] = price;
+        displayItems();
+        document.getElementById("itemName").value = "";
+        document.getElementById("itemPrice").value = "";
+      } else {
+        alert("Enter valid name and price");
+      }
+    }
+
+    function addSale() {
+      const itemName = document.getElementById("saleItem").value;
+      const qty = parseInt(document.getElementById("saleQty").value);
+      if (!qty || qty <= 0) return alert("Enter valid quantity");
+
+      const price = items[itemName];
+      sales.push({ item: itemName, qty, price, total: qty * price });
+      localStorage.setItem("ledgerSales", JSON.stringify(sales));
+      displaySales();
+      document.getElementById("saleQty").value = "";
+    }
+
+    function displaySales() {
+      const list = document.getElementById("salesList");
+      list.innerHTML = "";
+      let total = 0;
+      sales.forEach((s, i) => {
+        total += s.total;
+        list.innerHTML += `<div class="sale"><span>${s.item} × ${s.qty}</span><span>Rs ${s.total}</span></div>`;
+      });
+      document.getElementById("salesTotal").textContent = total;
+    }
+
+    function clearLedger() {
+      if (confirm("Clear entire menu?")) {
+        items = {};
+        localStorage.removeItem("ledgerItems");
+        displayItems();
+      }
+    }
+
+    function clearSales() {
+      if (confirm("Clear today’s sales?")) {
+        sales = [];
+        localStorage.removeItem("ledgerSales");
+        displaySales();
+      }
+    }
+
+    displayItems();
+    displaySales();
+  </script>
+</body>
+</html>
