@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop Ledger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            background-color: #6f4e37;
+            color: white;
+            padding: 15px;
+            margin: 0;
+        }
+        table {
+            margin: 20px auto;
+            width: 90%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #c19a6b;
+            color: white;
+        }
+        input {
+            width: 80px;
+            padding: 5px;
+            text-align: center;
+        }
+        button {
+            background-color: #6f4e37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #5b3e2e;
+        }
+        #total {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>☕ Coffee Shop Ledger</h1>
+
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Price (Rs)</th>
+            <th>Quantity</th>
+            <th>Subtotal (Rs)</th>
+        </tr>
+        <tr>
+            <td>Coffee</td>
+            <td><input type="number" id="price-coffee" value="150"></td>
+            <td><input type="number" id="qty-coffee" value="0"></td>
+            <td id="sub-coffee">0</td>
+        </tr>
+        <tr>
+            <td>Milk Tea</td>
+            <td><input type="number" id="price-milk" value="90"></td>
+            <td><input type="number" id="qty-milk" value="0"></td>
+            <td id="sub-milk">0</td>
+        </tr>
+        <tr>
+            <td>Black Tea</td>
+            <td><input type="number" id="price-black" value="50"></td>
+            <td><input type="number" id="qty-black" value="0"></td>
+            <td id="sub-black">0</td>
+        </tr>
+        <tr>
+            <td>Green Tea</td>
+            <td><input type="number" id="price-green" value="50"></td>
+            <td><input type="number" id="qty-green" value="0"></td>
+            <td id="sub-green">0</td>
+        </tr>
+        <tr>
+            <td>Parata</td>
+            <td><input type="number" id="price-parata" value="50"></td>
+            <td><input type="number" id="qty-parata" value="0"></td>
+            <td id="sub-parata">0</td>
+        </tr>
+        <tr>
+            <td>Alu Parata</td>
+            <td><input type="number" id="price-alu" value="90"></td>
+            <td><input type="number" id="qty-alu" value="0"></td>
+            <td id="sub-alu">0</td>
+        </tr>
+        <tr>
+            <td>Biryani (Single)</td>
+            <td><input type="number" id="price-bsingle" value="150"></td>
+            <td><input type="number" id="qty-bsingle" value="0"></td>
+            <td id="sub-bsingle">0</td>
+        </tr>
+        <tr>
+            <td>Biryani (Double)</td>
+            <td><input type="number" id="price-bdouble" value="250"></td>
+            <td><input type="number" id="qty-bdouble" value="0"></td>
+            <td id="sub-bdouble">0</td>
+        </tr>
+        <tr>
+            <td>Chicken Roll</td>
+            <td><input type="number" id="price-roll" value="150"></td>
+            <td><input type="number" id="qty-roll" value="0"></td>
+            <td id="sub-roll">0</td>
+        </tr>
+    </table>
+
+    <button onclick="calculateTotal()">Calculate Total</button>
+
+    <div id="total">Total: Rs 0</div>
+
+    <script>
+        function calculateTotal() {
+            const items = [
+                'coffee', 'milk', 'black', 'green', 
+                'parata', 'alu', 'bsingle', 'bdouble', 'roll'
+            ];
+            let total = 0;
+            items.forEach(item => {
+                const price = Number(document.getElementById(`price-${item}`).value);
+                const qty = Number(document.getElementById(`qty-${item}`).value);
+                const subtotal = price * qty;
+                document.getElementById(`sub-${item}`).innerText = subtotal;
+                total += subtotal;
+            });
+            document.getElementById("total").innerText = "Total: Rs " + total;
+        }
+    </script>
+
+</body>
+</html>
